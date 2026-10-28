@@ -453,7 +453,7 @@ function renderPanel(tab){
      <h2>${title}</h2>
      <p class="hint">${isOff?'휴무자를 체크하세요.':'현재 근무자 중 조기퇴근한 직원만 체크하세요.'}</p>
     </div>
-    <span class="badge">${daily[key].length}명</span>
+    <span class="badge">${isOff ? daily.off.length : selected.length}명</span>
    </div>
 
    <div class="notice">
