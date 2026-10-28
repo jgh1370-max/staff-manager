@@ -12,10 +12,7 @@ let refreshing = false;
 let loggingOut = false;
 const logoutButton = $('cloudLogout');
 
-const SYNC_INTERVAL = 1000;
-const IDLE_TIMEOUT = 30000;
-let lastInteraction = Date.now();
-let idleNotified = false;
+const SYNC_INTERVAL = 5000;
 const syncButton = document.createElement('button');
 syncButton.type = 'button';
 syncButton.textContent = '↻ 새로고침';
@@ -29,13 +26,6 @@ syncButton.addEventListener('click', () => {
   }
   window.location.reload();
 });
-for (const eventName of ['pointerdown', 'keydown']) {
-  document.addEventListener(eventName, () => {
-    const idle = Date.now() - lastInteraction >= IDLE_TIMEOUT;
-    lastInteraction = Date.now();
-    if (idle && !document.hidden) refresh();
-  }, { passive: true });
-}
 
 
 const api = async (path, options = {}) => {
@@ -470,15 +460,9 @@ logoutButton.addEventListener('click', async () => {
 // 최초 실행
 refresh();
 
-// 1초 자동 동기화, 30초 미조작 시 중지
+// 화면이 보이는 동안 5초마다 자동 동기화
 setInterval(() => {
   if (document.hidden || pending > 0 || !window._cloudReady) return;
-  if (Date.now() - lastInteraction >= IDLE_TIMEOUT) {
-    if (!idleNotified) setStatus('● 자동 동기화 대기', '#77827c');
-    idleNotified = true;
-    return;
-  }
-  idleNotified = false;
   refresh();
 }, SYNC_INTERVAL);
 
@@ -487,8 +471,6 @@ document.addEventListener(
   'visibilitychange',
   () => {
     if (!document.hidden && pending === 0) {
-      lastInteraction = Date.now();
-      idleNotified = false;
       refresh();
     }
   }
