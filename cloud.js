@@ -7,6 +7,8 @@ const baseRoster = structuredClone(DEFAULT_ROSTER);
 let syncing = false;
 let loaded = false;
 let seen = '';
+let knownEvents = [];
+let knownDay = '';
 let pending = 0;
 let refreshing = false;
 let loggingOut = false;
@@ -297,14 +299,19 @@ async function refresh() {
   syncing = true;
 
   try {
-    const result = await api('state');
+    const useIncremental = loaded && knownDay === daily?.date;
+    const result = await api('state' + (useIncremental ? '?day=' + encodeURIComponent(knownDay) : ''));
+    const allEvents = result.incremental
+      ? [...knownEvents.filter(e => e.day !== result.today), ...result.events]
+      : result.events;
+    allEvents.sort((a, b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id));
 
     // 서버 응답을 기다리는 동안
     // 새로운 저장이 시작됐다면 화면을 덮어쓰지 않음
     if (pending > 0 || loggingOut) return;
 
     const fingerprint =
-      JSON.stringify(result.events);
+      JSON.stringify(allEvents);
 
     if (
       fingerprint !== seen ||
@@ -312,7 +319,7 @@ async function refresh() {
       daily?.date !== result.today
     ) {
       const state = project(
-        result.events,
+        allEvents,
         result.today
       );
 
@@ -321,6 +328,8 @@ async function refresh() {
       window.staffHistory = state.history;
 
       seen = fingerprint;
+      knownEvents = allEvents;
+      knownDay = result.today;
       loaded = true;
 
       renderHome();
@@ -456,6 +465,8 @@ logoutButton.addEventListener('click', async () => {
     window._cloudReady = false;
     loaded = false;
     seen = '';
+    knownEvents = [];
+    knownDay = '';
     $('cloudPassword').value = '';
     $('cloudLoginError').textContent = '';
     logoutButton.classList.add('hidden');
