@@ -12,7 +12,25 @@ let refreshing = false;
 let loggingOut = false;
 const logoutButton = $('cloudLogout');
 
-const SYNC_INTERVAL = 3000;
+const SYNC_INTERVAL = 1000;
+const IDLE_TIMEOUT = 30000;
+let lastInteraction = Date.now();
+let idleNotified = false;
+const syncButton = document.createElement('button');
+syncButton.type = 'button';
+syncButton.textContent = '↻ 동기화';
+syncButton.title = '서버 최신 데이터 가져오기';
+syncButton.style.cssText = 'margin-left:8px;padding:5px 9px;border:1px solid #cad4d0;border-radius:7px;background:#fff;color:#365e51;cursor:pointer;font-size:12px';
+status.insertAdjacentElement('afterend', syncButton);
+syncButton.addEventListener('click', () => { lastInteraction = Date.now(); idleNotified = false; refresh(); });
+for (const eventName of ['pointerdown', 'keydown']) {
+  document.addEventListener(eventName, () => {
+    const idle = Date.now() - lastInteraction >= IDLE_TIMEOUT;
+    lastInteraction = Date.now();
+    if (idle && !document.hidden) refresh();
+  }, { passive: true });
+}
+
 
 const api = async (path, options = {}) => {
   const res = await fetch('/api/' + path, {
@@ -446,11 +464,16 @@ logoutButton.addEventListener('click', async () => {
 // 최초 실행
 refresh();
 
-// 3초 자동 동기화
+// 1초 자동 동기화, 30초 미조작 시 중지
 setInterval(() => {
-  if (!document.hidden && pending === 0) {
-    refresh();
+  if (document.hidden || pending > 0 || !window._cloudReady) return;
+  if (Date.now() - lastInteraction >= IDLE_TIMEOUT) {
+    if (!idleNotified) setStatus('● 자동 동기화 대기', '#77827c');
+    idleNotified = true;
+    return;
   }
+  idleNotified = false;
+  refresh();
 }, SYNC_INTERVAL);
 
 // 백그라운드에서 돌아오면 즉시 동기화
@@ -458,6 +481,8 @@ document.addEventListener(
   'visibilitychange',
   () => {
     if (!document.hidden && pending === 0) {
+      lastInteraction = Date.now();
+      idleNotified = false;
       refresh();
     }
   }
