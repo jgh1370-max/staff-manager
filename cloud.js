@@ -18,11 +18,17 @@ let lastInteraction = Date.now();
 let idleNotified = false;
 const syncButton = document.createElement('button');
 syncButton.type = 'button';
-syncButton.textContent = '↻ 동기화';
-syncButton.title = '서버 최신 데이터 가져오기';
+syncButton.textContent = '↻ 새로고침';
+syncButton.title = '페이지를 새로고침해 최신 데이터 불러오기';
 syncButton.style.cssText = 'margin-left:8px;padding:5px 9px;border:1px solid #cad4d0;border-radius:7px;background:#fff;color:#365e51;cursor:pointer;font-size:12px';
 status.insertAdjacentElement('afterend', syncButton);
-syncButton.addEventListener('click', () => { lastInteraction = Date.now(); idleNotified = false; refresh(); });
+syncButton.addEventListener('click', () => {
+  if (pending > 0) {
+    alert('저장 중입니다. 저장이 완료된 후 새로고침해 주세요.');
+    return;
+  }
+  window.location.reload();
+});
 for (const eventName of ['pointerdown', 'keydown']) {
   document.addEventListener(eventName, () => {
     const idle = Date.now() - lastInteraction >= IDLE_TIMEOUT;
