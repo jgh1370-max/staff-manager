@@ -33,15 +33,19 @@ export default async (req)=>{
   const store=getStore({name:'staff-events-v1',consistency:'strong'});
   if(path==='state'&&req.method==='GET'){
    const today=kstDay();
+   // Incremental polls only enumerate today's keys. A full replay remains
+   // available for login, day rollover and history reconstruction.
+   const incremental=new URL(req.url).searchParams.get('day')===today;
+   const prefix=incremental?`events/${today}/`:'events/';
    const keys=[];let cursor;
    do {
-    const page=await store.list({prefix:'events/',...(cursor?{cursor}:{})});
+    const page=await store.list({prefix,...(cursor?{cursor}:{})});
     keys.push(...page.blobs.map(b=>b.key));
     cursor=page.cursor;
    } while(cursor);
    const events=(await Promise.all(keys.map(k=>store.get(k,{type:'json',consistency:'strong'})))).filter(Boolean);
    events.sort((a,b)=>a.at.localeCompare(b.at)||a.id.localeCompare(b.id));
-   return json({today,events});
+   return json({today,events,incremental});
   }
   if(path==='change'&&req.method==='POST'){
    const body=await req.json();validateChanges(body.changes);
