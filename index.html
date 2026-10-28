@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#24342f">
+<title>매장 인원관리 · v15</title>
+<style>
+:root{--navy:#142b4a;--blue:#2767d8;--bg:#f3f6fa;--line:#e1e7ef;--text:#172334;--muted:#6c7888;--green:#16845b;--orange:#b96b13;--red:#c23b43}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif}button,input{font:inherit}button{cursor:pointer}
+header{background:var(--navy);color:white;padding:20px 16px}header .eyebrow{font-size:11px;opacity:.75;letter-spacing:.1em}header h1{font-size:24px;margin:5px 0}header p{font-size:13px;margin:0;opacity:.8}
+main{max-width:760px;margin:auto;padding:14px 12px 110px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat,.card{background:#fff;border:1px solid var(--line);border-radius:15px}.stat{text-align:center;padding:12px 5px}.stat-link{cursor:pointer;color:inherit;width:100%;font:inherit}.stat-link:active{background:#edf3ff}.stat-link:focus-visible{outline:3px solid var(--blue)}.stat strong{font-size:26px;display:block;line-height:1.2}.stat span{font-size:11px;color:var(--muted)}.card{padding:15px;margin-bottom:12px}.head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}.head h2{font-size:17px;margin:0}.hint{font-size:12px;color:var(--muted);margin:4px 0 0}.badge{font-size:12px;font-weight:750;color:var(--green);background:#e7f6ef;padding:5px 9px;border-radius:30px;white-space:nowrap}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.person{padding:7px 8px;border:1px solid var(--line);border-radius:10px;min-width:0;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:5px;min-height:52px}.person strong{font-size:19px;line-height:1.15;overflow-wrap:anywhere}.person small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.person.absent{background:#fff0f0;border-color:#f0caca}.person.early{background:#fff6e8;border-color:#f0d8b3}.person.done{background:#f0f5ff;border-color:#cbdcff}.person.fixed{background:#f4f1ff;border-color:#ddd4ff}.person.dinner-no{background:#f7f8fa;border-color:#e2e5e9}.group-title{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:800;padding:5px 2px 1px;margin-top:3px}.group-title small{font-size:11px;color:var(--muted);font-weight:600}.empty{text-align:center;color:var(--muted);padding:22px 8px;font-size:13px;grid-column:1/-1}.notice{background:#edf3ff;color:#254c8c;border-radius:10px;padding:10px 11px;font-size:12px;line-height:1.5;margin-bottom:12px}.form{display:flex;gap:7px;margin:10px 0}.field{width:100%;min-width:0;border:1px solid #cfd8e4;border-radius:10px;padding:11px;background:#fff}.btn{border:0;border-radius:10px;padding:10px 12px;background:var(--blue);color:white;font-weight:700;white-space:nowrap}.btn.secondary{background:#edf2f8;color:var(--navy)}.btn.danger{background:#fff0f0;color:var(--red)}.btn.small{font-size:12px;padding:7px 9px}.list{display:flex;flex-direction:column;gap:8px}.dinner-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.dinner-grid .row{padding:7px 5px;min-width:0;min-height:49px}.dinner-grid .row label{gap:6px}.dinner-grid .row .name{font-size:15px;line-height:1.15;overflow-wrap:anywhere}.dinner-grid .row .sub{font-size:10px}.dinner-grid .row input[type=checkbox]{width:17px;height:17px}.status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.status-grid .row{padding:7px 5px;min-width:0;min-height:49px}.status-grid .row label{gap:6px}.status-grid .row .name{font-size:15px;line-height:1.15;overflow-wrap:anywhere}.status-grid .row .sub{font-size:10px}.status-grid .row input[type=checkbox]{width:17px;height:17px}.lunch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.lunch-grid .row{padding:7px 5px;min-width:0;min-height:49px}.lunch-grid .row label{gap:6px}.lunch-grid .row .name{font-size:15px;line-height:1.15;overflow-wrap:anywhere}.lunch-grid .row .sub{font-size:10px}.lunch-grid .row input[type=checkbox]{width:17px;height:17px}.row{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px}.row label{display:flex;align-items:center;gap:10px;flex:1;min-width:0}.row input[type=checkbox]{width:21px;height:21px;accent-color:var(--blue);flex-shrink:0}.row .name{font-weight:750}.sub{font-size:12px;color:var(--muted);margin-top:2px}.actions{display:flex;gap:5px;flex-wrap:wrap}.tabs{position:fixed;z-index:10;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(6,1fr);background:white;border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px #10243b0b}.tab{border:0;background:transparent;color:var(--muted);font-size:10px;padding:6px 1px;border-radius:10px;min-width:0}.tab .icon{display:block;font-size:19px;margin-bottom:3px}.tab.active{color:var(--blue);background:#edf3ff;font-weight:800}.section-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.hidden{display:none!important}.checkline{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:9px}.checkline input{width:19px;height:19px;accent-color:var(--blue)}.footer-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}
+@media(min-width:560px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tabs{left:50%;right:auto;transform:translateX(-50%);width:min(100%,760px);border-radius:14px 14px 0 0}.tab{font-size:12px}}
+.roster-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.roster-grid .row{padding:9px 7px;min-width:0;flex-direction:column;align-items:stretch!important}.roster-grid .row .name{font-size:17px;font-weight:800}.roster-grid .checkline{font-size:11px;gap:4px;margin-top:7px}.roster-grid .actions{width:100%;flex-wrap:nowrap}.roster-grid .actions .btn{flex:1;font-size:11px;padding:6px 3px}.roster-grid .sub{font-size:10px}
+/* V15 — quiet professional interface, built from v13.1 */
+:root{--navy:#24342f;--blue:#365e51;--bg:#f7f8f6;--line:#e6e9e4;--text:#202a26;--muted:#77827c;--green:#386b52;--orange:#ad7645;--red:#b65a5c}
+html{color-scheme:light}body{background:var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;letter-spacing:-.035em;-webkit-font-smoothing:antialiased}
+header{background:#24342f;padding:28px 22px 29px;border-bottom:0}header .eyebrow{font-size:10px;letter-spacing:.17em;color:#a8bdb2;opacity:1;font-weight:650}header h1{font-size:27px;font-weight:730;letter-spacing:-.055em;margin:10px 0 9px}header p{font-size:12px;color:#d4dfd8;opacity:1}
+main{max-width:760px;padding:20px 16px 122px}.summary{gap:9px;margin-bottom:18px}.stat,.card{border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:0 2px 12px rgba(30,49,40,.025)}.stat{min-height:101px;padding:17px 5px 13px}.stat strong{font-size:31px;line-height:1.2;font-weight:750;color:#243a30;font-variant-numeric:tabular-nums;letter-spacing:-.06em}.stat span{display:block;font-size:10px;line-height:1.4;margin-top:9px;color:#76847b}.stat-link:active{background:#f0f5f1}.stat-link:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid #6e9982;outline-offset:2px}
+.card{padding:20px 17px;margin-bottom:13px}.head{align-items:flex-start;gap:9px;margin-bottom:17px}.head h2{font-size:17px;font-weight:750;letter-spacing:-.045em}.hint{font-size:11px;line-height:1.6;margin-top:6px;color:#84918a}.badge{font-size:11px;font-weight:720;color:#3c7257;background:#edf5ef;padding:6px 10px;border-radius:7px}
+.grid{gap:8px}.person{background:#fbfcfb;border:1px solid #e8ece8;border-radius:10px;min-height:60px;padding:11px 12px}.person strong{font-size:18px;font-weight:710;letter-spacing:-.05em}.person small{font-size:10px;color:#89958e;margin-top:5px}.person.absent{background:#fcf4f4;border-color:#f0e0e0}.person.early{background:#fdf8f1;border-color:#efe6d9}.person.done{background:#f1f6f3;border-color:#dce9df}.person.fixed{background:#f5f3f9;border-color:#e6e0f0}
+.notice{background:#f4f7f4;color:#64756a;border:1px solid #e9eee9;border-radius:10px;padding:12px 13px;font-size:11px;line-height:1.75}.row{background:#fff;border:1px solid #e8ece8;border-radius:10px;padding:11px}.row .name{font-weight:730;letter-spacing:-.04em}.sub{color:#8b978e}.row input[type=checkbox],.checkline input{accent-color:#426e56}.field{border:1px solid #dce4dd;border-radius:9px;padding:12px;outline:none}.field:focus{border-color:#668d72;box-shadow:0 0 0 3px #426e5617}
+.btn{background:#365e51;border-radius:9px;padding:11px 13px;font-weight:690;box-shadow:none}.btn.secondary{background:#edf2ee;color:#395749}.btn.danger{background:#fbefef;color:#a84e52}.btn:disabled{opacity:.4;cursor:default}.btn:active,.tab:active{filter:brightness(.95)}
+.status-grid,.lunch-grid,.dinner-grid{gap:7px}.status-grid .row,.lunch-grid .row,.dinner-grid .row{min-height:58px;padding:10px 7px}.status-grid .row .name,.lunch-grid .row .name,.dinner-grid .row .name{font-size:15px}.roster-grid{gap:9px}.roster-grid .row{padding:13px 11px}.roster-grid .row .name{font-size:17px}.roster-grid .actions .btn{padding:9px 4px}
+.tabs{background:#fff;border-top:1px solid #e8ece8;box-shadow:0 -5px 25px #23382b0a;padding:9px 5px calc(8px + env(safe-area-inset-bottom))}.tab{font-size:10px;line-height:1.35;color:#859188;padding:7px 1px;border-radius:9px;letter-spacing:-.045em}.tab .icon{height:23px;display:flex;align-items:center;justify-content:center;margin-bottom:5px;font-size:0}.tab .icon svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}.tab.active{color:#365e51;background:#eef4ef;font-weight:760}
+@media(max-width:365px){.tab{font-size:9px}.stat span{font-size:9px}.card{padding:17px 13px}}
+@media(min-width:560px){.tabs{border-radius:15px 15px 0 0}}
+@media(max-width:559px){.tabs{bottom:65px}main{padding-bottom:195px}}
+#cloudLock{position:fixed;inset:0;background:#f7f8f6;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}#cloudLock .card{width:min(100%,370px);padding:28px}#cloudStatus{position:fixed;top:8px;right:9px;z-index:20;background:#fff;border:1px solid #dce4dd;border-radius:8px;padding:5px 8px;font-size:11px;color:#365e51}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">STORE TEAM · DAILY STATUS</div><h1>매장 인원관리</h1><p id="today"></p></header>
+<main>
+<section id="home">
+ <div class="summary">
+  <button type="button" class="stat stat-link" data-list="working"><strong id="workN">0</strong><span>현재 근무 · 명부 보기 ›</span></button>
+  <button type="button" class="stat stat-link" data-list="off"><strong id="offN">0</strong><span>휴무 · 명부 보기 ›</span></button>
+  <div class="stat"><strong id="earlyN">0</strong><span>조기퇴근</span></div>
+ </div>
+ <div class="card"><div class="head"><div><h2>점심 식사 현황</h2><p class="hint">현재 근무 중인 직원의 점심 식사 대기 현황입니다.</p></div><span class="badge" id="lunchBadge">남음 0명</span></div><div id="lunchLeft" class="grid"></div></div>
+</section>
+<section id="panel" class="hidden"></section>
+</main>
+<nav class="tabs">
+<button class="tab active" data-tab="home"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5v1"/></svg></span>근무 현황</button>
+<button class="tab" data-tab="off"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.6A8 8 0 0 1 8.4 4 8 8 0 1 0 20 15.6Z"/></svg></span>휴무자</button>
+<button class="tab" data-tab="early"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8l5 3M4 12a8 8 0 1 0 3-6"/><path d="M4 5v4h4"/></svg></span>조기퇴근</button>
+<button class="tab" data-tab="lunch"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v8M8 3v8M5 7h3M6.5 11v10M16 3v18M16 3c4 2 4 7 0 9"/></svg></span>점심 확인</button>
+<button class="tab" data-tab="dinner"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h18M5 13a7 7 0 0 0 14 0M7 20h10M12 3v4M9 5l-2 3M15 5l2 3"/></svg></span>저녁 식사</button>
+<button class="tab" data-tab="roster"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span>총 명부</button>
+</nav>
+<script>
+const RKEY='storeStaffRoster_v3', DKEY='storeStaffDaily_v3', HKEY='storeStaffLunchHistory_v1';
+const dateKey=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const DEFAULT_ROSTER=[{"id":"staff-default-01","name":"고현석","lunchExempt":false},{"id":"staff-default-02","name":"신용준","lunchExempt":false},{"id":"staff-default-03","name":"김대원","lunchExempt":false},{"id":"staff-default-04","name":"김지은","lunchExempt":false},{"id":"staff-default-05","name":"이도용","lunchExempt":false},{"id":"staff-default-06","name":"백동희","lunchExempt":false},{"id":"staff-default-07","name":"조규현","lunchExempt":false},{"id":"staff-default-08","name":"고석현","lunchExempt":false},{"id":"staff-default-09","name":"이준섭","lunchExempt":false},{"id":"staff-default-10","name":"김호년","lunchExempt":false},{"id":"staff-default-11","name":"박은찬","lunchExempt":false},{"id":"staff-default-12","name":"김종형","lunchExempt":false},{"id":"staff-default-13","name":"임형묵","lunchExempt":false},{"id":"staff-default-14","name":"박나현","lunchExempt":false},{"id":"staff-default-15","name":"나수미","lunchExempt":false},{"id":"staff-default-16","name":"김가빈","lunchExempt":false},{"id":"staff-default-17","name":"손민주","lunchExempt":false},{"id":"staff-default-18","name":"김민정","lunchExempt":false},{"id":"staff-default-19","name":"김종원","lunchExempt":false},{"id":"staff-default-20","name":"박춘옥","lunchExempt":false},{"id":"staff-default-21","name":"주민균","lunchExempt":false},{"id":"staff-default-22","name":"이준호","lunchExempt":false},{"id":"staff-default-23","name":"정승연","lunchExempt":false}];
+let roster=read(RKEY,DEFAULT_ROSTER),daily=read(DKEY,{});
+// 기존 저장된 명부를 보존하면서 새로 요청된 직원 4명을 누락 없이 추가
+if(localStorage.getItem('staffRosterAdditions_23_v1')!=='done'){for(const p of DEFAULT_ROSTER.slice(-4)){if(!roster.some(x=>x.name===p.name))roster.push({...p});}localStorage.setItem('staffRosterAdditions_23_v1','done');}
+window.staffHistory=read(HKEY,[]);
+function read(k,f){try{let v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}}
+if(daily.date!==dateKey()) {
+ if(daily.date && Array.isArray(daily.lunchDepartures) && daily.lunchDepartures.length){
+  window.staffHistory=window.staffHistory.filter(x=>x.date!==daily.date);
+  window.staffHistory.push({date:daily.date,lunchDepartures:daily.lunchDepartures});
+  window.staffHistory=window.staffHistory.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30);
+  localStorage.setItem(HKEY,JSON.stringify(window.staffHistory));
+ }
+ daily={date:dateKey(),attendance:[],off:[],early:[],lunchDone:[],lunchDepartures:[],dinnerNo:[],undo:null};
+}
+daily.attendance ||= [];daily.off ||= [];daily.early ||= [];daily.lunchDone ||= [];daily.lunchDepartures ||= [];daily.dinnerNo ||= [];daily.undo ??= null;
+function save(){roster.sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko-KR'));if(window._cloudReady&&window._beforeEdit){const changes=computeChanges(window._beforeEdit,{roster,daily});window._beforeEdit=null;if(changes.length)sendChanges(changes);} }
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function member(id){return roster.find(p=>p.id===id)}
+function has(a,id){return a.includes(id)}
+function present(p){return !has(daily.off,p.id)&&!has(daily.early,p.id)}
+function lunchEligible(p){return !has(daily.off,p.id)&&!p.lunchExempt}
+function snapshot(){window._beforeEdit={roster:structuredClone(roster),daily:structuredClone(daily)};daily.undo={roster:JSON.parse(JSON.stringify(roster)),attendance:[...daily.attendance],off:[...daily.off],early:[...daily.early],lunchDone:[...daily.lunchDone],lunchDepartures:JSON.parse(JSON.stringify(daily.lunchDepartures||[])),dinnerNo:[...(daily.dinnerNo||[])]};}
+function undoButton(){return `<button class="btn secondary" disabled title="서버 공유 모드에서는 지원하지 않습니다">↶ 마지막 변경 취소 (비활성)</button>`}
+function restoreUndo(){if(!daily.undo){alert('취소할 변경 사항이 없습니다.');return}const u=daily.undo;window._beforeEdit={roster:structuredClone(roster),daily:structuredClone(daily)};if(u.roster)roster=u.roster;daily.attendance=u.attendance;daily.off=u.off;daily.early=u.early;daily.lunchDone=u.lunchDone;daily.lunchDepartures=u.lunchDepartures||[];daily.dinnerNo=u.dinnerNo||[];daily.undo=null;save();renderHome();showTab(currentTab)}
+let currentTab='home';
+document.querySelectorAll('[data-list]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.list==='working'?'workingList':'offList')));
+document.getElementById('today').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+function renderHome(){
+ const working=roster.filter(present),offs=roster.filter(p=>has(daily.off,p.id)),earlys=roster.filter(p=>has(daily.early,p.id));
+ const eligible=roster.filter(lunchEligible),left=eligible.filter(p=>!has(daily.lunchDone,p.id));
+ document.getElementById('workN').textContent=working.length;document.getElementById('offN').textContent=offs.length;document.getElementById('earlyN').textContent=earlys.length;
+ document.getElementById('lunchBadge').textContent=`남음 ${left.length}명`;
+ document.getElementById('lunchLeft').innerHTML=left.length?left.map(p=>`<div class="person"><div><strong>${esc(p.name)}</strong><small>식사 대기</small></div><span>🍽️</span></div>`).join(''):'<div class="empty">남은 점심 식사 대상자가 없습니다.</div>';
+}
+function showTab(tab){
+ currentTab=tab;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+ const home=document.getElementById('home'),panel=document.getElementById('panel');
+ if(tab==='home'){home.classList.remove('hidden');panel.classList.add('hidden');renderHome();return}
+ home.classList.add('hidden');panel.classList.remove('hidden');renderPanel(tab)
+}
+function renderPanel(tab){
+ const panel=document.getElementById('panel');
+ if(tab==='workingList'||tab==='offList'){
+  const isWork=tab==='workingList', people=roster.filter(p=>isWork?present(p):has(daily.off,p.id));
+  panel.innerHTML=`<div class="card"><div class="head"><div><h2>${isWork?'현재 근무 인원':'휴무자 명부'}</h2><p class="hint">가나다순 · ${people.length}명</p></div><button type="button" class="btn secondary small" id="backHome">← 돌아가기</button></div><div class="grid">${people.length?people.map(p=>`<div class="person"><strong>${esc(p.name)}</strong></div>`).join(''):'<div class="empty">해당 직원이 없습니다.</div>'}</div></div>`;
+  panel.querySelector('#backHome').addEventListener('click',()=>showTab('home'));
+  return;
+ }
+
+ if(tab==='off'||tab==='early'){
+  const isOff=tab==='off',key=isOff?'off':'early',title=isOff?'휴무자 선택':'조기퇴근 선택';
+  // 조기퇴근: 현재 근무자 + 이미 조기퇴근 처리한 직원(취소용)만 표시.
+  const candidates=isOff?roster:roster.filter(p=>!has(daily.off,p.id));
+  const available=isOff?candidates:candidates.filter(p=>!has(daily.early,p.id));
+  const selected=isOff?[]:candidates.filter(p=>has(daily.early,p.id));
+  const card=p=>`<div class="row"><label><input type="checkbox" data-status="${key}" data-id="${p.id}" ${has(daily[key],p.id)?'checked':''}><span><span class="name">${esc(p.name)}</span><div class="sub">${has(daily.off,p.id)?'휴무':has(daily.early,p.id)?'조기퇴근':'현재 근무'}</div></span></label></div>`;
+  panel.innerHTML=`<div class="card"><div class="head"><div><h2>${title}</h2><p class="hint">${isOff?'휴무자를 체크하세요.':'현재 근무자 중 조기퇴근한 직원만 체크하세요.'}</p></div><span class="badge">${daily[key].length}명</span></div><div class="notice">${isOff?'휴무로 체크하면 현재 근무 인원에서 제외됩니다.':'조기퇴근으로 체크하면 현재 근무 인원에서 제외됩니다. 아래 조기퇴근 처리 목록에서 체크 해제하면 근무자로 돌아옵니다.'}</div>${isOff?`<div class="status-grid">${candidates.length?candidates.map(card).join(''):'<div class="empty">총 명부에서 직원을 추가해 주세요.</div>'}</div>`:`<h3 style="font-size:14px;margin:0 0 8px">현재 근무자 <span class="sub">${available.length}명</span></h3><div class="status-grid">${available.length?available.map(card).join(''):'<div class="empty">현재 근무자가 없습니다.</div>'}</div><h3 style="font-size:14px;margin:16px 0 8px">조기퇴근 처리 <span class="sub">${selected.length}명</span></h3><div class="status-grid">${selected.length?selected.map(card).join(''):'<div class="empty">조기퇴근자가 없습니다.</div>'}</div>`}<div class="section-actions">${undoButton()}<button class="btn secondary" id="clearStatus">이 탭 선택 모두 해제</button></div></div>`;
+  panel.querySelectorAll('[data-status]').forEach(el=>el.addEventListener('change',()=>{snapshot();const id=el.dataset.id;if(el.checked){daily[key]=[...new Set([...daily[key],id])];let other=key==='off'?'early':'off';daily[other]=daily[other].filter(x=>x!==id);if(key==='off')daily.lunchDone=daily.lunchDone.filter(x=>x!==id)}else daily[key]=daily[key].filter(x=>x!==id);save();renderHome();renderPanel(tab)}));
+  panel.querySelector('#clearStatus').addEventListener('click',()=>{if(!daily[key].length)return;if(!confirm(`${title} ${daily[key].length}명의 선택을 모두 해제할까요?`))return;snapshot();daily[key]=[];save();renderHome();renderPanel(tab)});
+ }else if(tab==='lunch'){
+  const eligible=roster.filter(lunchEligible),done=eligible.filter(p=>has(daily.lunchDone,p.id)),left=eligible.filter(p=>!has(daily.lunchDone,p.id));
+  const departures=daily.lunchDepartures||[];
+  const prevDate=(()=>{const d=new Date();d.setDate(d.getDate()-1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`})();
+  const prevLogs=(window.staffHistory||[]).find(x=>x.date===prevDate)?.lunchDepartures||[];
+  const timeText=iso=>new Date(iso).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});
+  panel.innerHTML=`<div class="card"><div class="head"><div><h2>점심 식사 출발 확인</h2><p class="hint">직원을 선택한 후 출발을 확정하세요.</p></div><span class="badge">출발 ${done.length} · 대기 ${left.length}</span></div>
+  <div class="notice">직원을 선택해도 즉시 처리되지 않습니다. <b>출발 확정</b>을 누르고 확인 팝업에서 승인하면 출발 시간이 기록됩니다.</div>
+  <h3 style="font-size:14px;margin:0 0 8px">출발 대기 (${left.length}명)</h3>
+  <div class="lunch-grid">${left.length?left.map(p=>`<div class="row"><label><input type="checkbox" data-pick-lunch="${p.id}"><span><span class="name">${esc(p.name)}</span><div class="sub">출발 대상 선택</div></span></label></div>`).join(''):'<div class="empty">출발 대기자가 없습니다.</div>'}</div>
+  <div class="section-actions"><button class="btn" id="confirmDeparture" disabled>선택 인원 출발 확정 (0명)</button></div>
+  <h3 style="font-size:14px;margin:19px 0 8px">오늘 출발 완료 (${done.length}명)</h3>
+  <div class="list">${done.length?done.map(p=>{const log=[...departures].reverse().find(x=>x.id===p.id);return `<div class="row"><span><span class="name">${esc(p.name)}</span><div class="sub">${log?`출발 ${timeText(log.at)}`:'출발 시간 기록 없음 (기존 완료 기록)'}</div></span><button class="btn secondary small" data-undo-depart="${p.id}">출발 취소</button></div>`}).join(''):'<div class="empty">출발 확정된 직원이 없습니다.</div>'}</div>
+  <div class="section-actions"><button class="btn secondary" id="showYesterday">전날 식사 출발 로그 보기</button>${undoButton()}</div>
+  <div id="yesterdayLog" class="hidden" style="margin-top:14px;border-top:1px solid var(--line);padding-top:14px"><h3 style="font-size:14px;margin:0 0 10px">${prevDate} 출발 기록</h3><div class="list">${prevLogs.length?prevLogs.map(x=>`<div class="row"><strong>${esc(x.name)}</strong><span class="sub">${timeText(x.at)}</span></div>`).join(''):'<div class="empty">전날 기록이 없습니다.</div>'}</div></div>
+  </div>`;
+  const picks=[...panel.querySelectorAll('[data-pick-lunch]')],btn=panel.querySelector('#confirmDeparture');
+  picks.forEach(el=>el.addEventListener('change',()=>{const n=picks.filter(x=>x.checked).length;btn.disabled=!n;btn.textContent=`선택 인원 출발 확정 (${n}명)`}));
+  btn.addEventListener('click',()=>{const ids=picks.filter(x=>x.checked).map(x=>x.dataset.pickLunch);if(!ids.length)return;const names=ids.map(id=>member(id)?.name).filter(Boolean);if(!confirm(`${names.join(', ')}\n총 ${names.length}명의 점심 식사 출발을 확정할까요?\n확정 시 현재 시간이 기록됩니다.`))return;snapshot();const at=new Date().toISOString();daily.lunchDone=[...new Set([...daily.lunchDone,...ids])];daily.lunchDepartures=[...(daily.lunchDepartures||[]),...ids.map(id=>({id,name:member(id)?.name||'',at}))];save();renderHome();renderPanel('lunch')});
+  panel.querySelectorAll('[data-undo-depart]').forEach(el=>el.addEventListener('click',()=>{const id=el.dataset.undoDepart;if(!confirm(`${member(id)?.name||'선택 직원'}의 출발 확정을 취소할까요?`))return;snapshot();daily.lunchDone=daily.lunchDone.filter(x=>x!==id);daily.lunchDepartures=(daily.lunchDepartures||[]).filter(x=>x.id!==id);save();renderHome();renderPanel('lunch')}));
+  panel.querySelector('#showYesterday').addEventListener('click',()=>panel.querySelector('#yesterdayLog').classList.toggle('hidden'));
+ }else if(tab==='dinner'){
+  const working=roster.filter(present),notWant=working.filter(p=>has(daily.dinnerNo,p.id)),want=working.filter(p=>!has(daily.dinnerNo,p.id));
+  panel.innerHTML=`<div class="card"><div class="head"><div><h2>저녁 식사 신청</h2><p class="hint">저녁 식사를 원하지 않는 직원만 체크하세요.</p></div><span class="badge">희망 ${want.length} · 미희망 ${notWant.length}</span></div><div class="notice">체크한 직원은 저녁 식사 미희망으로 처리됩니다. 휴무·조기퇴근 직원은 이 목록에서 제외됩니다.</div><h3 style="font-size:14px;margin:0 0 8px">저녁 식사 희망 <span class="sub">${want.length}명</span></h3><div class="list dinner-grid">${want.length?want.map(p=>`<div class="row"><label><input type="checkbox" data-dinner="${p.id}"><span><span class="name">${esc(p.name)}</span><div class="sub">식사 희망</div></span></label></div>`).join(''):'<div class="empty">희망자가 없습니다.</div>'}</div><h3 style="font-size:14px;margin:16px 0 8px">저녁 식사 미희망 <span class="sub">${notWant.length}명</span></h3><div class="list dinner-grid">${notWant.length?notWant.map(p=>`<div class="row"><label><input type="checkbox" data-undinner="${p.id}" checked><span><span class="name">${esc(p.name)}</span><div class="sub">미희망 · 체크 해제 시 희망으로 복원</div></span></label></div>`).join(''):'<div class="empty">미희망자가 없습니다.</div>'}</div><div class="section-actions">${undoButton()}<button class="btn secondary" id="resetDinner">전체를 희망으로 초기화</button></div></div>`;
+  panel.querySelectorAll('[data-dinner],[data-undinner]').forEach(el=>el.addEventListener('change',()=>{snapshot();const id=el.dataset.dinner||el.dataset.undinner;if(el.checked)daily.dinnerNo=[...new Set([...daily.dinnerNo,id])];else daily.dinnerNo=daily.dinnerNo.filter(x=>x!==id);save();renderHome();renderPanel('dinner')}));
+  panel.querySelector('#resetDinner').addEventListener('click',()=>{if(!daily.dinnerNo.length)return;if(!confirm(`저녁 미희망 ${notWant.length}명을 포함한 모든 직원의 선택을 희망으로 초기화할까요?`))return;snapshot();daily.dinnerNo=[];save();renderHome();renderPanel('dinner')});
+ }else if(tab==='roster'){
+  panel.innerHTML=`<div class="card"><div class="head"><div><h2>총 명부 관리</h2><p class="hint">직원 명부 및 점심 고정 제외 설정</p></div><span class="badge">${roster.length}명</span></div><form class="form" id="addForm"><input class="field" id="newName" placeholder="직원 이름 입력" maxlength="30" required><button class="btn">직원 추가</button></form><div class="notice">명부에 등록된 직원은 기본적으로 근무자로 표시됩니다. 휴무자 또는 조기퇴근 탭에서 선택하면 현재 근무자에서 제외됩니다. 점심 고정 제외는 점심 식사 확인 대상에서 빠집니다.</div><div class="list roster-grid">${roster.length?roster.map(p=>`<div class="row" style="align-items:flex-start"><div style="flex:1;min-width:0"><div class="name">${esc(p.name)}</div><div class="sub">${p.lunchExempt?'점심 고정 제외':'점심 확인 대상'}</div><label class="checkline"><input type="checkbox" data-exempt="${p.id}" ${p.lunchExempt?'checked':''}>점심 식사 고정 제외</label></div><div class="actions"><button class="btn secondary small" data-rename="${p.id}">이름 수정</button><button class="btn danger small" data-delete="${p.id}">삭제</button></div></div>`).join(''):'<div class="empty">직원 이름을 입력해 추가하세요.</div>'}</div><div class="section-actions">${undoButton()}<button class="btn secondary" id="exportBtn">데이터 백업</button><button class="btn secondary" id="importBtn">백업 가져오기</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div><p class="footer-note">데이터 백업은 가능합니다. 공유 서버 데이터 전체 가져오기는 안전을 위해 비활성화되어 있습니다.</p></div>`;
+  panel.querySelector('#addForm').addEventListener('submit',e=>{e.preventDefault();let name=panel.querySelector('#newName').value.trim();if(!name)return;if(roster.some(p=>p.name.toLowerCase()===name.toLowerCase())){alert('같은 이름이 이미 있습니다.');return}snapshot();roster.push({id:makeId(),name,lunchExempt:false});save();renderHome();renderPanel('roster')});
+  panel.querySelectorAll('[data-exempt]').forEach(el=>el.addEventListener('change',()=>{snapshot();let p=member(el.dataset.exempt);p.lunchExempt=el.checked;if(el.checked)daily.lunchDone=daily.lunchDone.filter(x=>x!==p.id);save();renderHome();renderPanel('roster')}));
+  panel.querySelectorAll('[data-rename]').forEach(btn=>btn.addEventListener('click',()=>{let p=member(btn.dataset.rename),name=prompt('새 이름을 입력하세요.',p.name);if(name===null)return;if(!name.trim()){alert('이름을 입력하세요.');return}snapshot();p.name=name.trim();save();renderHome();renderPanel('roster')}));
+  panel.querySelectorAll('[data-delete]').forEach(btn=>btn.addEventListener('click',()=>{let p=member(btn.dataset.delete);if(!confirm(`${p.name} 직원을 명부에서 삭제할까요?\n삭제하면 이 직원의 오늘 상태도 함께 삭제됩니다.`))return;snapshot();roster=roster.filter(x=>x.id!==p.id);for(let k of ['attendance','off','early','lunchDone','dinnerNo'])daily[k]=daily[k].filter(x=>x!==p.id);save();renderHome();renderPanel('roster')}));
+  panel.querySelector('#exportBtn').addEventListener('click',()=>{let blob=new Blob([JSON.stringify({roster,daily,history:window.staffHistory},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`매장인원관리-${dateKey()}.json`;a.click();URL.revokeObjectURL(url)});
+  panel.querySelector('#importBtn').addEventListener('click',()=>panel.querySelector('#importFile').click());
+  panel.querySelector('#importFile').addEventListener('change',async e=>{let file=e.target.files[0];if(!file)return;try{let data=JSON.parse(await file.text());if(!Array.isArray(data.roster)||!data.daily)throw Error();alert('서버 공유 모드에서는 전체 백업 덮어쓰기를 지원하지 않습니다.');return;snapshot();roster=data.roster;daily=data.daily;window.staffHistory=Array.isArray(data.history)?data.history:window.staffHistory;daily.date=dateKey();daily.attendance ||= [];daily.off ||= [];daily.early ||= [];daily.lunchDone ||= [];daily.lunchDepartures ||= [];daily.dinnerNo ||= [];daily.undo=null;save();renderHome();renderPanel('roster')}catch(err){alert('백업 파일을 읽지 못했습니다. 올바른 백업 JSON 파일인지 확인하세요.')}});
+ }
+ const undo=panel.querySelector('#undoBtn');if(undo)undo.addEventListener('click',restoreUndo);
+}
+function makeId(){return 'staff-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9)}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+save();renderHome();
+</script>
+<div id="cloudLock"><div class="card"><h2 style="margin-top:0">매장 인원관리 로그인</h2><p class="hint">매장 공통 비밀번호를 입력하세요.</p><form id="cloudLoginForm" class="form" style="flex-direction:column"><input class="field" id="cloudPassword" type="password" autocomplete="current-password" placeholder="공통 비밀번호" required><button class="btn">로그인</button></form><p class="hint" id="cloudLoginError"></p></div></div>
+<div id="cloudStatus" aria-live="polite">서버 연결 중</div>
+<script type="module" src="/cloud.js"></script>
+
+</body>
+</html>
