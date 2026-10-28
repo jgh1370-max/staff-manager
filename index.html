@@ -165,7 +165,7 @@ main{padding-bottom:122px}
 
 #cloudLock{position:fixed;inset:0;background:#f7f8f6;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
 #cloudLock .card{width:min(100%,370px);padding:28px}
-#cloudStatus{position:fixed;top:8px;right:9px;z-index:20;background:#fff;border:1px solid #dce4dd;border-radius:8px;padding:5px 8px;font-size:11px;color:#365e51}
+#cloudLogout{position:fixed;top:40px;right:9px;z-index:20;border:1px solid #a7bbb0;border-radius:8px;background:#f5faf6;color:#365e51;padding:6px 10px;font-size:12px;font-weight:700}#cloudLogout:disabled{opacity:.55}#cloudStatus{position:fixed;top:8px;right:9px;z-index:20;background:#fff;border:1px solid #dce4dd;border-radius:8px;padding:5px 8px;font-size:11px;color:#365e51}
 </style>
 </head>
 <body>
@@ -936,6 +936,7 @@ renderHome();
 </div>
 
 <div id="cloudStatus" aria-live="polite">서버 연결 중</div>
+<button type="button" id="cloudLogout" class="hidden">로그아웃</button>
 <script type="module" src="/cloud.js"></script>
 
 </body>

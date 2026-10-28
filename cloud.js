@@ -9,6 +9,8 @@ let loaded = false;
 let seen = '';
 let pending = 0;
 let refreshing = false;
+let loggingOut = false;
+const logoutButton = $('cloudLogout');
 
 const SYNC_INTERVAL = 3000;
 
@@ -264,7 +266,7 @@ function setStatus(message, color) {
 }
 
 async function refresh() {
-  if (syncing || pending > 0) return;
+  if (loggingOut || syncing || pending > 0) return;
 
   syncing = true;
 
@@ -273,7 +275,7 @@ async function refresh() {
 
     // 서버 응답을 기다리는 동안
     // 새로운 저장이 시작됐다면 화면을 덮어쓰지 않음
-    if (pending > 0) return;
+    if (pending > 0 || loggingOut) return;
 
     const fingerprint =
       JSON.stringify(result.events);
@@ -300,6 +302,7 @@ async function refresh() {
     }
 
     lock.classList.add('hidden');
+    logoutButton.classList.remove('hidden');
     window._cloudReady = true;
 
     setStatus(
@@ -313,6 +316,8 @@ async function refresh() {
     );
 
     if (err.status === 401) {
+      window._cloudReady = false;
+      logoutButton.classList.add('hidden');
       lock.classList.remove('hidden');
       $('cloudLoginError').textContent =
         '로그인이 필요합니다.';
@@ -411,6 +416,32 @@ $('cloudLoginForm').addEventListener(
     }
   }
 );
+
+// 서버 세션 쿠키 삭제 후 로그인 화면으로 전환
+logoutButton.addEventListener('click', async () => {
+  if (loggingOut) return;
+  if (!confirm('로그아웃하시겠습니까?')) return;
+  if (pending > 0) { alert('저장이 완료된 후 로그아웃해 주세요.'); return; }
+  loggingOut = true;
+  logoutButton.disabled = true;
+  setStatus('● 로그아웃 중', '#ad7645');
+  try {
+    await post('logout', {});
+    window._cloudReady = false;
+    loaded = false;
+    seen = '';
+    $('cloudPassword').value = '';
+    $('cloudLoginError').textContent = '';
+    logoutButton.classList.add('hidden');
+    lock.classList.remove('hidden');
+    setStatus('● 로그인 필요', '#77827c');
+  } catch (err) {
+    alert('로그아웃 실패: ' + err.message);
+  } finally {
+    loggingOut = false;
+    logoutButton.disabled = false;
+  }
+});
 
 // 최초 실행
 refresh();
