@@ -360,7 +360,7 @@ function renderHome(){
 
  document.getElementById('workN').textContent=working.length;
  document.getElementById('offN').textContent=offs.length;
- document.getElementById('earlyN').textContent=earlys.length;
+ document.getElementById('earlyN').textContent=roster.filter(p=>has(daily.early,p.id)&&!has(daily.off,p.id)).length;
  document.getElementById('lunchBadge').textContent=`남음 ${left.length}명`;
 
  document.getElementById('lunchLeft').innerHTML=
