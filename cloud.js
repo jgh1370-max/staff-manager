@@ -12,8 +12,10 @@ let refreshing = false;
 let loggingOut = false;
 const logoutButton = $('cloudLogout');
 
-const SYNC_INTERVAL = 1000;
-const IDLE_TIMEOUT = 30000;
+const SYNC_INTERVAL = 5000;
+// Keep polling while visible. The old 30-second idle cutoff prevented
+// passive tablets from receiving colleagues' changes.
+const IDLE_TIMEOUT = Infinity;
 let lastInteraction = Date.now();
 let idleNotified = false;
 const syncButton = document.createElement('button');
@@ -470,15 +472,9 @@ logoutButton.addEventListener('click', async () => {
 // 최초 실행
 refresh();
 
-// 1초 자동 동기화, 30초 미조작 시 중지
+// Visible devices keep syncing every 5 seconds, even without interaction.
 setInterval(() => {
   if (document.hidden || pending > 0 || !window._cloudReady) return;
-  if (Date.now() - lastInteraction >= IDLE_TIMEOUT) {
-    if (!idleNotified) setStatus('● 자동 동기화 대기', '#77827c');
-    idleNotified = true;
-    return;
-  }
-  idleNotified = false;
   refresh();
 }, SYNC_INTERVAL);
 
