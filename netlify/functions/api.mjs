@@ -30,7 +30,7 @@ export default async (req)=>{
   }
   if(path==='logout'&&req.method==='POST')return json({ok:true},200,{'set-cookie':'staff_session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0'});
   if(!authorized(req))return json({error:'로그인이 필요합니다.'},401);
-  const store=getStore('staff-events-v1');
+  const store=getStore({name:'staff-events-v1',consistency:'strong'});
   if(path==='state'&&req.method==='GET'){
    const today=kstDay();
    const keys=[];let cursor;
